@@ -92,7 +92,7 @@ export default {
           type: 'success',
           message: '上传成功!'
         });
-        this.inp = true
+        this.dataAjax()
       }else{
         this.$message({
           type: 'info',

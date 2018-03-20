@@ -45,13 +45,14 @@
           <el-button
             size="mini"
             type="danger"
-            @click="open2(scope.row.id)"
-            v-show="!btnGolle(scope.row.del)"
+            @click="open2(scope.row.id,'禁用', disUrl)"
+            v-show="btnGolle(scope.row.del)"
             >禁用</el-button>
           <el-button
             size="mini"
             type="warning"
-            v-show="btnGolle(scope.row.del)"
+            @click="open2(scope.row.id, '开启', unlockUrk)"
+            v-show="!btnGolle(scope.row.del)"
             >开启</el-button>
         </template>
       </el-table-column>
@@ -69,22 +70,26 @@ export default {
     return {
       url: 'http://www.pfspt.com/express/index.php/Admin/Index/user',
       disUrl: 'http://www.pfspt.com/express/index.php/Admin/Index/disable',
+      unlockUrk: 'http://www.pfspt.com/express/index.php/Admin/Index/unlock',
       tableData2: []
     }
   },
   created() {
-    let keyId = {
-      "me_id": getCookie('me_id')
-    }
-    axiosPost(this.url, keyId).then((res, Error) => {
-      if (res.status === 0) {
-        this.tableData2 = res.data
-      }else{
-        console.log(Error)
-      }
-    })
+    this.createAjaxData()
   },
   methods: {
+    createAjaxData() {
+      let keyId = {
+        "me_id": getCookie('me_id')
+      }
+      axiosPost(this.url, keyId).then((res, Error) => {
+        if (res.status === 0) {
+          this.tableData2 = res.data
+        }else{
+          console.log(Error)
+        }
+      })
+    },
     getTimeDate(time) {
       return timestampToTime(time)
     },
@@ -99,30 +104,36 @@ export default {
       }
           return '';
     },
-    open2(id) {
-      this.$confirm('是否确定禁用此用户?', '提示', {
+    ajaxPost(id, text, url) {
+      let data = {
+        "id": id
+      }
+      axiosPost(url, data).then((res) => {
+        if(res.status === 0) {
+          this.$message({
+            type: 'success',
+            message: `${text}成功!`
+          });
+          this.createAjaxData()
+        }else{
+          this.$message({
+            type: 'info',
+            message: `${text}失败`
+          });
+        }
+      })
+    },
+    open2(id, text, url) {
+      this.$confirm(`是否确定${text}此用户?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let data = {
-          "id": id
-        }
-        axiosPost(this.disUrl, data).then((res) => {
-          if(res.status === 0) {
-            this.$message({
-              type: 'success',
-              message: '禁用成功!'
-            })
-          }else{
-            console.log('禁用失败')
-          }
-        })
-        this.btnGolle = false
+        this.ajaxPost(id, text, url)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消禁用'
+          message: `已取消${text}`
         });
       });
     }

@@ -6,8 +6,26 @@
           <el-col :span="4"><img src="./login_03.png" class="img-login" /></el-col>
           <el-col :span="17">
             <el-row class="nav-list">
-              <el-col :span="3" class="hover" v-for="item in 5">
-                <router-link tag="div" :to="{ name: '', params: {}}">{{ item }}</router-link>
+              <el-col :span="3" class="hover">
+                <router-link tag="div" :to="{ name: '拍摄申请', params: {}, path: '/contentBody/mShotList'}">
+                  <el-badge :value="statisData.shot" :max="99" class="item">
+                    拍摄申请
+                  </el-badge>
+                </router-link>
+              </el-col>
+              <el-col :span="3" class="hover">
+                  <router-link tag="div" :to="{ name: '提现申请', params: {}, path: '/contentBody/ApplyMoney'}">
+                    <el-badge :value="statisData.detailed" :max="99" class="item">
+                      提现申请
+                    </el-badge>
+                  </router-link>
+              </el-col>
+              <el-col :span="3" class="hover">
+                <router-link tag="div" :to="{ name: '', params: {}, path: '/contentBody/MNotGoods'}">
+                  <el-badge :value="statisData.order" :max="99" class="item">
+                    代发货订单
+                  </el-badge>
+                </router-link>
               </el-col>
             </el-row>
           </el-col>
@@ -30,7 +48,11 @@
             <el-submenu :index="item.id" v-for="(item, index) in navListData">
               <template slot="title"><i :class="item.icon"></i>{{ item.title }}</template>
               <!-- 分组一 -->
-                <el-menu-item :index="list.id" v-for="list in item.select"><router-link tag="div" :to="{ name: '', params: {}, path: list.path}">{{ list.text }}</router-link></el-menu-item>
+              <router-link tag="div" :to="{ name: '', params: {}, path: list.path}" v-for="list in item.select">
+                <el-menu-item :index="list.id">
+                  {{ list.text }}
+                </el-menu-item>
+              </router-link>
             </el-submenu>
           </el-menu>
         </el-aside>
@@ -50,18 +72,23 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      navData: [''],
+      navData: [],
       navListData: [],
-      loginUrl: 'http://www.pfspt.com/express/index.php/Admin/Index/outlogin'
+      url: 'http://www.pfspt.com/express/index.php/Admin/Toji/statistics',
+      statisData: {}
     }
   },
   created() {
     this.navListData = JSON.parse(navListDate2)
+    this.exitLogin(this.url)
   },
   methods: {
-    exitLogin() {
-      axios.get(this.loginUrl).then((data) => {
-        console.log(data)
+    exitLogin(url) {
+      axios.get(url).then((res) => {
+        if(res.data.status === 0) {
+          this.statisData = res.data.data
+          console.log(this.statisData)
+        }
       })
     }
   }
@@ -70,6 +97,15 @@ export default {
 
 <style lang="less">
 html,body{
+  height: 100%;
+};
+#app{
+  height: 100%;
+  .contentBody{
+    height: 100%;
+  }
+};
+.el-container{
   height: 100%;
 };
 @lineHeight: 60px;
@@ -96,10 +132,13 @@ html,body{
     text-align: center;
   }
 }
-
+.el-badge__content.is-fixed {
+  top: 15px;
+  right: 5px;
+}
 .el-aside{
   padding-bottom: 30px;
-  min-height: 800px;
+  min-height: 700px;
   background-color: #254552;
   .el-menu{
     background: none;
@@ -130,6 +169,9 @@ html,body{
     }
   }
 }
+// .router-link-active{
+//   background-color: #2c4049;
+// }
 .el-main{
   background-color: #E9EEF3;
 }
