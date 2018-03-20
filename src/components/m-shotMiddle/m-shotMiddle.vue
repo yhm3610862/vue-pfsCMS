@@ -48,19 +48,18 @@
              class="upload-demo"
              ref="uploadFile"
              :action="fileUrl(scope.row.sh_id)"
+             :on-success="onSuccess"
              multiple
-             :before-upload="beforeUp"
              name="folder"
              :file-list="fileList">
              <el-button size="mini" type="primary">点击上传</el-button>
-             <div slot="tip" class="el-upload__tip">上传前请先压缩一下文件</div>
           </el-upload>
         </template>
       </el-table-column>
       <el-table-column
         label="状态">
         <template slot-scope="scope">
-          <el-button type="danger" size="small" @click="modifyShot(scope.row.sh_id)">拍摄完成</el-button>
+          <el-button type="danger" :disabled="disBledGo(scope.row.sh_download)" size="small" @click="modifyShot(scope.row.sh_id)">拍摄完成</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,31 +79,44 @@ export default {
       modifyUrl: 'http://www.pfspt.com/express/index.php/Admin/Shot/complete_shot',
       shotData: [],
       importFileUrl: 'http://www.pfspt.com/express/index.php/Admin/Shot/compress',
-      fileList: [],
-      headerObj: {
-        "Content-Type": "multipart/form-data"
-      },
-      inp: false
+      fileList: []
     }
   },
   created() {
     this.dataAjax()
   },
   methods: {
+    onSuccess(res) {
+      if (res.status === 0) {
+        this.$message({
+          type: 'success',
+          message: '上传成功!'
+        });
+        this.inp = true
+      }else{
+        this.$message({
+          type: 'info',
+          message: '上传失败!请压缩zip格式'
+        });
+      }
+    },
+    disBledGo(flieType) {
+      return flieType == 1 ? true : false
+    },
     beforeUp(file) {
-      let fd = new FormData()
-      let url = this.$refs.uploadFile.action
-      fd.append('folder', file)
-      axios({
-        method: 'post',
-        url: url,
-        headers: {
-          "content-type": "multipart/form-data"
-        },
-        data: fd
-      }).then((res) => {
-
-      })
+      // let fd = new FormData()
+      // let url = this.$refs.uploadFile.action
+      // console.log(url)
+      // fd.append('folder', file)
+      // axios({
+      //   method: 'post',
+      //   headers: {
+      //     "content-type": "multipart/form-data"
+      //   },
+      //   data: fd
+      // }).then((res) => {
+      //
+      // })
     },
     fileUrl(id) {
       let url = this.importFileUrl+`?sh_id=${id}`
