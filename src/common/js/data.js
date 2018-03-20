@@ -272,12 +272,12 @@ export const navListDate2 = `[
       {
         "text": "提现申请处理",
         "id": "6-1",
-        "path": ""
+        "path": "/contentBody/ApplyMoney"
       },
       {
         "text": "提现记录查询",
         "id": "6-2",
-        "path": ""
+        "path": "/contentBody/RecordMoney"
       }
     ]
   },
@@ -289,17 +289,17 @@ export const navListDate2 = `[
       {
         "text": "未发货订单管理",
         "id": "3-1",
-        "path": ""
+        "path": "/contentBody/MNotGoods"
       },
       {
         "text": "发货订单管理",
         "id": "3-2",
-        "path": ""
+        "path": "/contentBody/DeleverGoods"
       },
       {
         "text": "已完成订单",
         "id": "3-3",
-        "path": ""
+        "path": "/contentBody/CompleteGoods"
       },
       {
         "text": "退货管理",

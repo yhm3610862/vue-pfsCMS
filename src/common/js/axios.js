@@ -5,7 +5,7 @@ export function axiosPost(url, data) {
   return axios({
     method: 'post',
     url: url,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
       "content-type": "application/x-www-form-urlencoded;charset=UTF-8"
     },

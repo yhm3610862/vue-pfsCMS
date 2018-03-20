@@ -1,24 +1,15 @@
 <template lang="html">
   <div class="m-shotMiddle">
-    <form class="" :action="importFileUrl" method="post" enctype="multipart/form-data">
-      <el-upload
-        class="upload-demo"
-        name="foder"
-        :action="importFileUrl"
-        :on-change="handleChange"
-        :file-list="fileList3">
-        <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
-    </form>
     <el-table
       :data="shotData"
       style="width: 100%"
       :row-class-name="tableRowClassName">
       <el-table-column
-        prop="addtime"
         label="日期"
         width="100">
+        <template slot-scope="scope">
+          {{ getTimeDate(scope.row.addtime) }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="shop"
@@ -27,11 +18,6 @@
       <el-table-column
         prop="sh_express"
         label="快递单号"
-        width="120">
-      </el-table-column>
-      <el-table-column
-        prop="qq"
-        label="QQ号"
         width="120">
       </el-table-column>
       <el-table-column
@@ -58,6 +44,23 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
+          <el-upload
+             class="upload-demo"
+             ref="uploadFile"
+             :action="fileUrl(scope.row.sh_id)"
+             multiple
+             :before-upload="beforeUp"
+             name="folder"
+             :file-list="fileList">
+             <el-button size="mini" type="primary">点击上传</el-button>
+             <div slot="tip" class="el-upload__tip">上传前请先压缩一下文件</div>
+          </el-upload>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="状态">
+        <template slot-scope="scope">
+          <el-button type="danger" size="small" @click="modifyShot(scope.row.sh_id)">拍摄完成</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,28 +70,59 @@
 
 <script>
 import {axiosPost} from '@/common/js/axios'
-import {getCookie} from '@/common/js/cookie'
+import axios from 'axios'
+import {getCookie, timestampToTime} from '@/common/js/cookie'
 import Pagination from '@/base/pagination/pagination'
 export default {
   data() {
     return {
       url: 'http://www.pfspt.com/express/index.php/Admin/Shot/status_shot',
-      modifyUrl: 'http://www.pfspt.com/express/index.php/Admin/Shot/adopt_apply',
+      modifyUrl: 'http://www.pfspt.com/express/index.php/Admin/Shot/complete_shot',
       shotData: [],
       importFileUrl: 'http://www.pfspt.com/express/index.php/Admin/Shot/compress',
-      fileList3: []
+      fileList: [],
+      headerObj: {
+        "Content-Type": "multipart/form-data"
+      },
+      inp: false
     }
   },
   created() {
     this.dataAjax()
   },
   methods: {
+    beforeUp(file) {
+      let fd = new FormData()
+      let url = this.$refs.uploadFile.action
+      fd.append('folder', file)
+      axios({
+        method: 'post',
+        url: url,
+        headers: {
+          "content-type": "multipart/form-data"
+        },
+        data: fd
+      }).then((res) => {
+
+      })
+    },
+    fileUrl(id) {
+      let url = this.importFileUrl+`?sh_id=${id}`
+      return url
+    },
+    inpGoll() {
+      this.inp = true
+    },
     dataAjax() {
       let data = {
         "me_id": getCookie("me_id")
       }
       axiosPost(this.url, data).then((res) => {
-        this.shotData = res.data
+        if(res.status === 0) {
+           this.shotData = res.data
+        }else if (res.status) {
+          this.shotData = []
+        }
       })
     },
     tableRowClassName({row, rowIndex}) {
@@ -108,8 +142,11 @@ export default {
         if (res.status === 0) {
           this.$message({
             type: 'success',
-            message: '确认申请成功!'
+            message: '确认成功!'
           });
+          setTimeout(() => {
+            this.dataAjax()
+          }, 100)
         }else{
           this.$message({
             type: 'info',
@@ -121,8 +158,8 @@ export default {
     statusText(status) {
       return status == 2 ? '申请中':status == 3 ? '拍摄中' : '已完成'
     },
-    handleChange(file, fileList) {
-      this.fileList3 = fileList.slice(-3);
+    getTimeDate(time) {
+      return timestampToTime(time)
     }
   },
   components: {

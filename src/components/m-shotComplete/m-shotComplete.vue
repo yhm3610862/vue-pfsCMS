@@ -3,11 +3,15 @@
     <el-table
       :data="shotData"
       style="width: 100%"
+      border
       :row-class-name="tableRowClassName">
       <el-table-column
         prop="addtime"
         label="日期"
         width="100">
+        <template slot-scope="scope">
+          {{ getTimeDate(scope.row.addtime) }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="shop"
@@ -18,10 +22,6 @@
         label="快递单号"
         width="120">
       </el-table-column>
-      <el-table-column
-        prop="qq"
-        label="QQ号"
-        width="120">
       </el-table-column>
       <el-table-column
         prop="tel"
@@ -44,11 +44,12 @@
           close-transition>{{ statusText(scope.row.sh_status) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column
-        label="操作">
-        <template slot-scope="scope">
-
-        </template>
+        <el-table-column
+          label="文件下载">
+          <template slot-scope="scope">
+            <a :href="scope.row.sh_download">点击下载</a>
+          </template>
+        </el-table-column>
       </el-table-column>
     </el-table>
     <Pagination></Pagination>
@@ -57,7 +58,7 @@
 
 <script>
 import {axiosPost} from '@/common/js/axios'
-import {getCookie} from '@/common/js/cookie'
+import {getCookie, timestampToTime} from '@/common/js/cookie'
 import Pagination from '@/base/pagination/pagination'
 export default {
   data() {
@@ -90,6 +91,9 @@ export default {
     },
     statusText(status) {
       return status == 2 ? '申请中':status == 3 ? '拍摄中' : '已完成'
+    },
+    getTimeDate(time) {
+      return timestampToTime(time)
     }
   },
   components: {

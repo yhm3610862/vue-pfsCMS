@@ -13,8 +13,12 @@
           </el-col>
           <el-col :span="3">
             <el-row class="user">
-              <el-col :span="12" class="hover"><router-link tag="div" :to="{ name: '', params: {}, path: '/contentBody/modifyUser'}">admin</router-link></el-col>
-              <el-col :span="12" class="hover"><router-link @click.native="exitLogin" tag="div" :to="{ name: '', params: {}, path: '/login'}"><i class="el-icon-upload"></i></router-link></el-col>
+              <el-col :span="12" class="hover">
+                <router-link tag="div" :to="{ name: '', params: {}, path: '/contentBody/modifyUser'}">admin</router-link>
+              </el-col>
+              <el-col :span="12" class="hover">
+                <router-link @click.native="exitLogin" tag="div" :to="{ name: '', params: {}, path: '/login'}"><i class="el-icon-upload"></i></router-link>
+              </el-col>
             </el-row>
           </el-col>
         </el-row>
@@ -120,9 +124,9 @@ html,body{
     .el-menu-item{
       color: #B7D3E1;
     };
-    .el-menu-item:hover{
+    .el-menu-item:hover,.el-menu-item:focus{
       color: #fff;
-      background: #20343D;
+      background: #20343D + 12;
     }
   }
 }

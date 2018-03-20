@@ -11,9 +11,8 @@
        width="55">
      </el-table-column>
      <el-table-column
-       label="日期"
-       width="">
-       <template slot-scope="scope">{{ scope.row.me_time }}</template>
+       label="日期">
+       <template slot-scope="scope">{{ getTimeDate(scope.row.me_time) }}</template>
      </el-table-column>
      <el-table-column
        label="头像"
@@ -56,7 +55,7 @@
 
    <script>
    import {axiosPost} from '@/common/js/axios'
-   import {getCookie} from '@/common/js/cookie'
+   import {getCookie, timestampToTime} from '@/common/js/cookie'
    import Pagination from '@/base/pagination/pagination'
    export default {
      data() {
@@ -67,6 +66,7 @@
        }
      },
      created() {
+       console.log('asdsd')
        let keyId = {
          "me_id": getCookie('me_id')
        }
@@ -95,6 +95,9 @@
              message: '已取消删除'
            });
          });
+       },
+       getTimeDate(time) {
+         return timestampToTime(time)
        }
      },
      components: {

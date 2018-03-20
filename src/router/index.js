@@ -12,6 +12,11 @@ import MShotList from '@/components/m-shotList/m-shotList'
 import MShotComplete from '@/components/m-shotComplete/m-shotComplete'
 import MShotMiddle from '@/components/m-shotMiddle/m-shotMiddle'
 import BalanceMoney from '@/components/balanceMoney/balanceMoney'
+import ApplyMoney from '@/components/applyMoney/applyMoney'
+import RecordMoney from '@/components/recordMoney/recordMoney'
+import MNotGoods from '@/components/m-notGoods/m-notGoods'
+import DeleverGoods from '@/components/deleverGoods/deleverGoods'
+import CompleteGoods from '@/components/completeGoods/completeGoods'
 
 Vue.use(Router)
 
@@ -24,7 +29,6 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'Login',
       component: Login
     },
     {
@@ -69,13 +73,38 @@ export default new Router({
         },
         {
           path: '/contentBody/MShotMiddle',
-          name: '拍摄完成',
+          name: '拍摄中',
           component: MShotMiddle
         },
         {
           path: '/contentBody/BalanceMoney',
-          name: '拍摄完成',
+          name: '查询余额',
           component: BalanceMoney
+        },
+        {
+          path: '/contentBody/ApplyMoney',
+          name: '提现申请',
+          component: ApplyMoney
+        },
+        {
+          path: '/contentBody/RecordMoney',
+          name: '提现记录',
+          component: RecordMoney
+        },
+        {
+          path: '/contentBody/MNotGoods',
+          name: '未发货',
+          component: MNotGoods
+        },
+        {
+          path: '/contentBody/DeleverGoods',
+          name: '已发货',
+          component: DeleverGoods
+        },
+        {
+          path: '/contentBody/CompleteGoods',
+          name: '已发货',
+          component: CompleteGoods
         }
       ]
     }

@@ -5,9 +5,9 @@
       style="width: 100%"
       :row-class-name="tableRowClassName">
       <el-table-column
-        prop="addtime"
         label="日期"
         width="100">
+        <template slot-scope="scope">{{ getTimeDate(scope.row.addtime) }}</template>
       </el-table-column>
       <el-table-column
         prop="shop"
@@ -58,7 +58,7 @@
 
 <script>
 import {axiosPost} from '@/common/js/axios'
-import {getCookie} from '@/common/js/cookie'
+import {getCookie, timestampToTime} from '@/common/js/cookie'
 import Pagination from '@/base/pagination/pagination'
 export default {
   data() {
@@ -77,7 +77,13 @@ export default {
         "me_id": getCookie("me_id")
       }
       axiosPost(this.url, data).then((res) => {
-        this.shotData = res.data
+        if(res.status === 0) {
+          this.shotData = res.data
+        }else if (res.status === 1) {
+          console.log('无数据')
+        }else{
+          console.error("出现异常");
+        }
       })
     },
     tableRowClassName({row, rowIndex}) {
@@ -109,6 +115,9 @@ export default {
     },
     statusText(status) {
       return status == 2 ? '申请中':status == 3 ? '拍摄中' : '已完成'
+    },
+    getTimeDate(time) {
+      return timestampToTime(time)
     }
   },
   components: {

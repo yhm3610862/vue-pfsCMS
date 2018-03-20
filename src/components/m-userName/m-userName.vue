@@ -5,9 +5,11 @@
       style="width: 100%"
       :row-class-name="tableRowClassName">
       <el-table-column
-        prop="addtime"
         label="日期"
         width="120">
+        <template slot-scope="scope">
+          {{ getTimeDate(scope.row.addtime) }}
+        </template>
       </el-table-column>
       <el-table-column
         label="头像"
@@ -43,12 +45,13 @@
           <el-button
             size="mini"
             type="danger"
-            @click="open2"
-            v-show="!btnGolle(scope.row.tel)"
+            @click="open2(scope.row.id)"
+            v-show="!btnGolle(scope.row.del)"
             >禁用</el-button>
           <el-button
             size="mini"
-            v-show="btnGolle(scope.row.tel)"
+            type="warning"
+            v-show="btnGolle(scope.row.del)"
             >开启</el-button>
         </template>
       </el-table-column>
@@ -59,12 +62,13 @@
 
 <script>
 import {axiosPost} from '@/common/js/axios'
-import {getCookie} from '@/common/js/cookie'
+import {getCookie, timestampToTime} from '@/common/js/cookie'
 import Pagination from '@/base/pagination/pagination'
 export default {
   data() {
     return {
       url: 'http://www.pfspt.com/express/index.php/Admin/Index/user',
+      disUrl: 'http://www.pfspt.com/express/index.php/Admin/Index/disable',
       tableData2: []
     }
   },
@@ -75,15 +79,17 @@ export default {
     axiosPost(this.url, keyId).then((res, Error) => {
       if (res.status === 0) {
         this.tableData2 = res.data
-        console.log(this.tableData2)
       }else{
         console.log(Error)
       }
     })
   },
   methods: {
-    btnGolle(tel) {
-      return tel == 0 ? true : false
+    getTimeDate(time) {
+      return timestampToTime(time)
+    },
+    btnGolle(del) {
+      return del == 0 ? true : false
     },
     tableRowClassName({row, rowIndex}) {
       if (rowIndex === 1) {
@@ -93,16 +99,25 @@ export default {
       }
           return '';
     },
-    open2() {
+    open2(id) {
       this.$confirm('是否确定禁用此用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '禁用成功!'
-        });
+        let data = {
+          "id": id
+        }
+        axiosPost(this.disUrl, data).then((res) => {
+          if(res.status === 0) {
+            this.$message({
+              type: 'success',
+              message: '禁用成功!'
+            })
+          }else{
+            console.log('禁用失败')
+          }
+        })
         this.btnGolle = false
       }).catch(() => {
         this.$message({
@@ -118,17 +133,24 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="less">
 .m-userName{
   padding:5px 10px;
   border-radius: 5px;
   background-color: #fff;
   min-height: 500px;
+  .el-button{
+    margin-left: 0px;
+  }
 }
+
 .el-table .warning-row {
   background: oldlace;
 }
 .el-table .success-row {
   background: #f0f9eb;
+}
+.el-table{
+  min-height: 500px;
 }
 </style>

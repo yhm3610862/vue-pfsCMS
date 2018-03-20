@@ -3,7 +3,7 @@
     <div class="login-wrapper">
     </div>
     <div class="login-columon">
-      <h1 class="title">账号登录</h1>
+      <h1 class="title">平方树后台管理</h1>
       <div class="inp">
         <input @blur="userEsit" type="text" name="user"  placeholder="请输入账号" v-model="fromData.user">
         <div class="inpText"><span>{{ usetText }}</span></div>
