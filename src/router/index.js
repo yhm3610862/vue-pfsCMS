@@ -17,6 +17,7 @@ import RecordMoney from '@/components/recordMoney/recordMoney'
 import MNotGoods from '@/components/m-notGoods/m-notGoods'
 import DeleverGoods from '@/components/deleverGoods/deleverGoods'
 import CompleteGoods from '@/components/completeGoods/completeGoods'
+import ReturGoods from '@/components/returGoods/returGoods'
 
 Vue.use(Router)
 
@@ -25,7 +26,10 @@ export default new Router({
     {
       path: '/',
       name: 'Login',
-      component: Login
+      component: Login,
+      data: {
+        title: '这是头部'
+      }
     },
     {
       path: '/login',
@@ -105,6 +109,11 @@ export default new Router({
           path: '/contentBody/CompleteGoods',
           name: '已发货',
           component: CompleteGoods
+        },
+        {
+          path: '/contentBody/ReturGoods',
+          name: '退货管理',
+          component: ReturGoods
         }
       ]
     }

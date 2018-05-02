@@ -18,18 +18,6 @@
       <el-table-column type="expand">
       <template slot-scope="props">
         <el-form label-position="left" inline class="demo-table-expand">
-          <el-form-item label="市场">
-            <span>{{ props.row.market }}</span>
-          </el-form-item>
-          <el-form-item label="档口">
-            <span>{{ props.row.stalls }}</span>
-          </el-form-item>
-          <el-form-item label="货号">
-            <span>{{ props.row.number }}</span>
-          </el-form-item>
-          <el-form-item label="价格">
-            <span>{{ props.row.price }}</span>
-          </el-form-item>
           <el-form-item label="地址">
             <span>{{ props.row.address }}</span>
           </el-form-item>
@@ -45,61 +33,49 @@
           <el-form-item label="买家留言">
             <span>{{ props.row.message }}</span>
           </el-form-item>
-          <el-form-item label="快递单号">
-            <span>{{ props.row.ex_num }}</span>
-          </el-form-item>
         </el-form>
        </template>
       </el-table-column>
       <el-table-column
         prop="date"
-        label="日期"
-        width="120">
+        label="时间">
         <template slot-scope="scope">
-          {{ getTimeDate(scope.row.or_time) }}
+          {{ _getTimeDate(scope.row.or_time) }}
         </template>
       </el-table-column>
       <el-table-column
-          label="商品图像"
-          width="120">
-          <template slot-scope="scope">
-            <img :src="scope.row.photo" alt="" style="float:left;width: 80px;height:80px;border-radius:50%;"/>
-          </template>
+        prop="or_number"
+        label="订单编号">
       </el-table-column>
       <el-table-column
-        prop="product"
-        label="商品名称"
-        width="200"
-        style="font-weight:bold;">
+        prop="subtotal"
+        label="合计价格">
       </el-table-column>
       <el-table-column
-        prop="ordernumber"
-        label="订单编号"
-        width="160">
+        label="查看">
+        <template slot-scope="scope">
+          <el-button size="small" type="danger" @click="childerAjax(scope.row.orderid)">查看订单</el-button>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="size"
-        label="尺码">
+        label="快递单号">
+        <template slot-scope="scope">
+          <el-tag type="success">圆通：{{ scope.row.or_express }}</el-tag>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="color"
-        label="颜色">
-      </el-table-column>
-      <el-table-column
-        prop="num"
-        label="数量">
-      </el-table-column>
-      <el-table-column
-        prop="agent"
-        label="单价">
-      </el-table-column>
-      <el-table-column
-        label="操作">
+        label="状态">
         <template slot-scope="scope">
           <el-tag type="danger">已发货</el-tag>
         </template>
       </el-table-column>
     </el-table>
+    <transition name="fade">
+      <div class="listMudal" v-show="childerBolle">
+        <GoodsListMudal ref="goodsMudal"></GoodsListMudal>
+      </div>
+    </transition>
+    <div class="mudalDay" v-show="childerBolle" @click="_hide"></div>
     <Pagination></Pagination>
   </div>
 </template>
@@ -108,12 +84,14 @@
 import {axiosPost} from '@/common/js/axios'
 import {getCookie, timestampToTime} from '@/common/js/cookie'
 import Pagination from '@/base/pagination/pagination'
+import GoodsListMudal from '@/base/goodsListMudal/goodsListMudal'
 export default {
   data() {
     return {
-      url: 'http://www.pfspt.com/express/index.php/Admin/Order/already_goods',
+      url: 'http://www.pfspt.com/express/index.php/Admin/Pay/se_express',
       formData: {},
-      goodsData: []
+      goodsData: [],
+      childerBolle: false
     }
   },
   created() {
@@ -126,10 +104,21 @@ export default {
   methods: {
     getTimeDate(time) {
       return timestampToTime(time)
+    },
+    _hide() {
+      this.childerBolle = false
+    },
+    childerAjax(id) {
+      this.$refs.goodsMudal.childerProps(id)
+      this.childerBolle = true
+    },
+    _getTimeDate(time) {
+      return timestampToTime(time)
     }
   },
   components: {
-    Pagination
+    Pagination,
+    GoodsListMudal
   }
 }
 </script>
@@ -154,5 +143,41 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+}
+.mudalDay{
+  position: fixed;
+  z-index: 998;
+  top: 0px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .5);
+}
+.listMudal{
+  position: fixed;
+  z-index: 999;
+  top: 100px;
+  width: 900px;
+  height: 500px;
+  overflow: scroll;
+}
+.inpNumber{
+  display: block;
+  margin: 300px auto;
+  width: 300px;
+}
+.inpText{
+  padding-left: 5px;
+  width: 200px;
+  height: 32px;
+  border: none;
+  border: 1px solid #fff;
+  border-radius: 3px;
+}
+.fade-enter-active, .fade-leave-active{
+  transition: all 0.3s;
+}
+.fade-enter, .fade-leave-to{
+  opacity: 0;
 }
 </style>

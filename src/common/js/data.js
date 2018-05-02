@@ -297,14 +297,9 @@ export const navListDate2 = `[
         "path": "/contentBody/DeleverGoods"
       },
       {
-        "text": "已完成订单",
-        "id": "3-3",
-        "path": "/contentBody/CompleteGoods"
-      },
-      {
         "text": "退货管理",
         "id": "3-4",
-        "path": ""
+        "path": "/contentBody/ReturGoods"
       }
     ]
   },
@@ -321,3 +316,8 @@ export const navListDate2 = `[
     ]
   }
 ]`;
+// {
+//   "text": "已完成订单",
+//   "id": "3-3",
+//   "path": "/contentBody/CompleteGoods"
+// },

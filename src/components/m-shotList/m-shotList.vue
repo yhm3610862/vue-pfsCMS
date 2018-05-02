@@ -7,7 +7,7 @@
       <el-table-column
         label="日期"
         width="100">
-        <template slot-scope="scope">{{ getTimeDate(scope.row.addtime) }}</template>
+        <template slot-scope="scope">{{ getTimeDate(scope.row.sh_time) }}</template>
       </el-table-column>
       <el-table-column
         prop="shop"
@@ -24,7 +24,7 @@
         width="120">
       </el-table-column>
       <el-table-column
-        prop="tel"
+        prop="sh_phone"
         label="手机号">
       </el-table-column>
       <el-table-column
@@ -48,7 +48,6 @@
         label="操作">
         <template slot-scope="scope">
           <el-button @click="modifyShot(scope.row.sh_id)" type="primary" v-show="true" plain>确认申请</el-button>
-          <el-button type="danger" v-show="false" plain>上传图片</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,6 +104,7 @@ export default {
             type: 'success',
             message: '确认申请成功!'
           });
+          this.dataAjax()
         }else{
           this.$message({
             type: 'info',
